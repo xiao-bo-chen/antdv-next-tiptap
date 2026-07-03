@@ -1,6 +1,11 @@
 {
   "extends": "./tsconfig.app.json",
-  "include": ["typings/*.d.ts", "src/components/tiptap/**/*"],
+  "include": [
+    "typings/*.d.ts",
+    "src/components/**/*",
+    "src/locales/**/*",
+    "src/composables/**/*"
+  ],
   "compilerOptions": {
     "skipLibCheck": true
   }

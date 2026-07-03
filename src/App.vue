@@ -2,10 +2,10 @@
 import { theme } from 'antdv-next'
 import { computed, ref, watchEffect } from 'vue'
 
-import './../dist/index.css'
-// import { AEditor } from '@/components'
+// import './../dist/index.css'
+import { AEditor } from '@/components'
 // @ts-ignore
-import { AEditor } from './../dist'
+// import { AEditor } from './../dist'
 
 const isDark = ref(false)
 const locale = ref<'zh-CN' | 'en-US'>('zh-CN')
@@ -96,7 +96,7 @@ const handleUploadVideo = mockUpload
     <a-config-provider :theme="themeConfig">
         <a-app>
             <a
-                href="https://github.com/datawhalechina/Hello-Agents"
+                href="https://github.com/pengyinghao/antdv-next-tiptap"
                 target="_blank"
                 class="fixed top-0 right-0 z-1 decoration-none border-b-0"
             >
