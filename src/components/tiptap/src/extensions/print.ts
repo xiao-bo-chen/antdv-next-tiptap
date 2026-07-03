@@ -538,7 +538,7 @@ export const printPlugin: EditorPlugin = {
         { divider: true },
         {
             icon: PrintLineIcon,
-            title: '打印',
+            title: 'print',
             action: (editor: Editor) => {
                 printHtml(editor.getHTML())
             }

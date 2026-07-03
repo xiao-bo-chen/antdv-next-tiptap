@@ -14,7 +14,7 @@ export const codePlugin: EditorPlugin = {
     toolbar: [
         {
             icon: CodeLineIcon,
-            title: '行内代码',
+            title: 'code',
             action: (editor) => editor.chain().focus().toggleCode().run(),
             isActive: (editor) => editor.isActive('code')
         }

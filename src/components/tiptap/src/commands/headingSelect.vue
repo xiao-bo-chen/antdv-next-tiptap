@@ -5,25 +5,30 @@ import ArrowDownSLine from '@/assets/icons/ri--arrow-down-s-line.svg'
 import H1Icon from '@/assets/icons/ri--h1.svg'
 import H2Icon from '@/assets/icons/ri--h2.svg'
 import H3Icon from '@/assets/icons/ri--h3.svg'
+import { useLocale } from '@/composables/useLocale'
 
 const props = defineProps<{ editor: Editor }>()
 
-const items = [
-    { level: 1, icon: H1Icon, label: '标题 1' },
-    { level: 2, icon: H2Icon, label: '标题 2' },
-    { level: 3, icon: H3Icon, label: '标题 3' }
-] as const
+const { t } = useLocale()
+
+const items = computed(() => [
+    { level: 1 as const, icon: H1Icon, label: t('heading1') },
+    { level: 2 as const, icon: H2Icon, label: t('heading2') },
+    { level: 3 as const, icon: H3Icon, label: t('heading3') }
+])
 
 const activeLevel = computed(() => {
-    for (const item of items) {
+    for (const item of items.value) {
         if (props.editor.isActive('heading', { level: item.level })) return item.level
     }
     return null
 })
 
-const activeIcon = computed(() => items.find((i) => i.level === activeLevel.value)?.icon ?? H1Icon)
+const activeIcon = computed(
+    () => items.value.find((i) => i.level === activeLevel.value)?.icon ?? H1Icon
+)
 
-const toggle = (level: (typeof items)[number]['level']) => {
+const toggle = (level: 1 | 2 | 3) => {
     props.editor.chain().focus().toggleHeading({ level }).run()
 }
 </script>

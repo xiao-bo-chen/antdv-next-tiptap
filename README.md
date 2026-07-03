@@ -32,6 +32,7 @@
 | ------------- | -------------------------------------------------------------------------- |
 | 插件化扩展    | 内置标题、字体、颜色、列表、代码块、表格、图片、视频、全屏、打印等常用能力 |
 | Antdv Next UI | 工具栏、弹窗、下拉菜单等交互控件与 Antdv Next 体系保持一致                 |
+| 国际化        | 内置中文 / 英文，支持运行时切换，也可传入自定义语言包                      |
 | TypeScript    | 暴露 `EditorProps`、`EditorPlugin`、`PluginName`、`OutputFormat` 等类型    |
 | 内容格式      | 支持 HTML 字符串和 Tiptap JSON 文档格式输出                                |
 | 媒体上传      | 图片支持上传函数或 base64 内嵌；视频支持地址嵌入和自定义上传               |
@@ -41,13 +42,13 @@
 ## 安装
 
 ```bash
-pnpm add antdv-next-tiptap antdv-next vue
+pnpm add antdv-next-tiptap antdv-next @tiptap/core @tiptap/vue-3 @tiptap/pm @tiptap/starter-kit @tiptap/extensions vue
 ```
 
 也可以使用 npm：
 
 ```bash
-npm install antdv-next-tiptap antdv-next vue
+npm install antdv-next-tiptap antdv-next @tiptap/core @tiptap/vue-3 @tiptap/pm @tiptap/starter-kit @tiptap/extensions vue
 ```
 
 ## 快速开始
@@ -103,16 +104,17 @@ const content = ref('')
 
 ### Props
 
-| 参数              | 类型               | 默认值      | 说明                                           |
-| ----------------- | ------------------ | ----------- | ---------------------------------------------- |
-| `modelValue`      | `string`           | `''`        | 编辑器内容，配合 `v-model` 使用                |
-| `height`          | `number`           | `300`       | 内容区域高度，单位为 px                        |
-| `editable`        | `boolean`          | `true`      | 是否允许编辑                                   |
-| `outputFormat`    | `'html' \| 'json'` | `'html'`    | `modelValue` 的输出格式                        |
-| `disabledPlugins` | `PluginName[]`     | `[]`        | 需要禁用的插件名称列表                         |
-| `uploadImage`     | `UploadFn`         | `undefined` | 自定义图片上传函数；未提供时图片以 base64 内嵌 |
-| `uploadVideo`     | `UploadFn`         | `undefined` | 自定义视频上传函数；未提供时仅支持输入视频地址 |
-| `wordCount`       | `true \| number`   | `undefined` | 字符计数；传入数字时同时限制最大字符数         |
+| 参数              | 类型                                    | 默认值      | 说明                                                         |
+| ----------------- | --------------------------------------- | ----------- | ------------------------------------------------------------ |
+| `modelValue`      | `string`                                | `''`        | 编辑器内容，配合 `v-model` 使用                              |
+| `height`          | `number`                                | `300`       | 内容区域高度，单位为 px                                      |
+| `editable`        | `boolean`                               | `true`      | 是否允许编辑                                                 |
+| `outputFormat`    | `'html' \| 'json'`                      | `'html'`    | `modelValue` 的输出格式                                      |
+| `locale`          | `'zh-CN' \| 'en-US' \| LocaleMessages` | `'zh-CN'`   | 界面语言；可传内置语言标识，也可传完整的自定义消息对象       |
+| `disabledPlugins` | `PluginName[]`                          | `[]`        | 需要禁用的插件名称列表                                       |
+| `uploadImage`     | `UploadFn`                              | `undefined` | 自定义图片上传函数；未提供时图片以 base64 内嵌               |
+| `uploadVideo`     | `UploadFn`                              | `undefined` | 自定义视频上传函数；未提供时仅支持输入视频地址               |
+| `wordCount`       | `true \| number`                        | `undefined` | 字符计数；传入数字时同时限制最大字符数                       |
 
 ```ts
 type UploadFn = (file: File, onProgress: (percent: number) => void) => Promise<string>
@@ -177,6 +179,65 @@ type UploadFn = (file: File, onProgress: (percent: number) => void) => Promise<s
 | `fontSize`       | 字号                 |
 | `print`          | 打印                 |
 | `fullscreen`     | 全屏模式             |
+
+## 国际化
+
+编辑器内置中文（`zh-CN`）和英文（`en-US`）两套语言，通过 `locale` prop 控制。
+
+### 静态语言
+
+```vue
+<!-- 英文界面 -->
+<AEditor v-model="content" locale="en-US" />
+```
+
+### 运行时切换
+
+将 `locale` 绑定到响应式变量，切换时编辑器界面即刻更新，无需重新挂载：
+
+```vue
+<template>
+  <a-segmented
+    v-model:value="locale"
+    :options="[
+      { label: '中文', value: 'zh-CN' },
+      { label: 'English', value: 'en-US' }
+    ]"
+  />
+  <AEditor v-model="content" :locale="locale" />
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const content = ref('')
+const locale = ref<'zh-CN' | 'en-US'>('zh-CN')
+</script>
+```
+
+### 自定义语言包
+
+传入完整的 `LocaleMessages` 对象可接入任意语言或覆盖任意文案：
+
+```vue
+<template>
+  <AEditor v-model="content" :locale="myLocale" />
+</template>
+
+<script setup lang="ts">
+import { zhCN } from 'antdv-next-tiptap'
+import type { LocaleMessages } from 'antdv-next-tiptap'
+
+// 在中文基础上局部覆盖
+const myLocale: LocaleMessages = {
+  ...zhCN,
+  bold: '粗体',
+  italic: '斜体'
+}
+</script>
+```
+
+如需完全自定义，从 `antdv-next-tiptap` 导出 `LocaleMessages` 类型，按照该类型结构提供全部翻译键值即可。
 
 ## 常用示例
 

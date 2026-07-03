@@ -17,7 +17,7 @@ export const codeBlockPlugin: EditorPlugin = {
     toolbar: [
         {
             icon: CodeBoxLineIcon,
-            title: '代码块',
+            title: 'codeBlock',
             action: (editor) => editor.chain().focus().toggleCodeBlock().run(),
             isActive: (editor) => editor.isActive('codeBlock')
         }

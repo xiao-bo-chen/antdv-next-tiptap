@@ -6,17 +6,20 @@ import type { Rule } from 'antdv-next/dist/form/types'
 import { computed, nextTick, reactive, ref } from 'vue'
 
 import LinkIcon from '@/assets/icons/ri--link.svg'
+import { useLocale } from '@/composables/useLocale'
 
 const props = defineProps<{ editor?: Editor }>()
+
+const { t } = useLocale()
 
 const visible = ref(false)
 const formRef = ref<FormInstance>()
 const hrefInputRef = ref<InputRef>()
 const formData = reactive({ href: '', openInNewTab: false })
 
-const rules: Record<string, Rule[]> = {
-    href: [{ required: true, message: '请输入链接地址', trigger: ['blur', 'change'] }]
-}
+const rules = computed<Record<string, Rule[]>>(() => ({
+    href: [{ required: true, message: t('linkUrlRequired'), trigger: ['blur', 'change'] }]
+}))
 
 const isActive = computed(() => !!props.editor?.isActive('link'))
 
@@ -54,20 +57,20 @@ const handleCancel = () => {
 </script>
 
 <template>
-    <div title="链接" :class="['toolbar-btn', { active: isActive }]" @click="openModal">
-        <a-tooltip title="链接" placement="bottom">
+    <div :title="t('link')" :class="['toolbar-btn', { active: isActive }]" @click="openModal">
+        <a-tooltip :title="t('link')" placement="bottom">
             <LinkIcon></LinkIcon>
         </a-tooltip>
     </div>
     <a-modal
         v-model:open="visible"
-        title="插入链接"
+        :title="t('insertLink')"
         width="420px"
         :closable="false"
         @cancel="handleCancel"
     >
         <a-form ref="formRef" :model="formData" :rules="rules" layout="vertical" class="link-form">
-            <a-form-item label="链接地址" name="href">
+            <a-form-item :label="t('linkUrl')" name="href">
                 <a-input
                     ref="hrefInputRef"
                     v-model:value="formData.href"
@@ -76,15 +79,17 @@ const handleCancel = () => {
                 />
             </a-form-item>
             <a-form-item name="openInNewTab">
-                <a-checkbox v-model:checked="formData.openInNewTab">在新标签页中打开</a-checkbox>
+                <a-checkbox v-model:checked="formData.openInNewTab">{{
+                    t('openInNewTab')
+                }}</a-checkbox>
             </a-form-item>
             <a-form-item v-if="isActive">
-                <a-button danger @click="handleRemoveLink">移除链接</a-button>
+                <a-button danger @click="handleRemoveLink">{{ t('removeLink') }}</a-button>
             </a-form-item>
         </a-form>
         <template #footer>
-            <a-button @click="handleCancel">取消</a-button>
-            <a-button type="primary" @click="handleConfirm">确定</a-button>
+            <a-button @click="handleCancel">{{ t('cancel') }}</a-button>
+            <a-button type="primary" @click="handleConfirm">{{ t('confirm') }}</a-button>
         </template>
     </a-modal>
 </template>

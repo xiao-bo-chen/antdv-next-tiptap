@@ -14,7 +14,7 @@ export const horizontalRulePlugin: EditorPlugin = {
     toolbar: [
         {
             icon: SeparatorIcon,
-            title: '分割线',
+            title: 'horizontalRule',
             action: (editor) => editor.chain().focus().setHorizontalRule().run()
         }
     ]

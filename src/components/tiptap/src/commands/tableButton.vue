@@ -2,8 +2,11 @@
 import type { Editor } from '@tiptap/vue-3'
 
 import LayoutGridLine from '@/assets/icons/ri--layout-grid-line.svg'
+import { useLocale } from '@/composables/useLocale'
 
 const props = defineProps<{ editor?: Editor }>()
+
+const { t } = useLocale()
 
 const GRID_SIZE = 10
 
@@ -61,7 +64,7 @@ const onCreate = () => {
                 <div class="grid-label">{{ selRows || '-' }} × {{ selCols || '-' }}</div>
             </div>
         </template>
-        <div title="插入表格" class="toolbar-btn">
+        <div :title="t('insertTable')" class="toolbar-btn">
             <LayoutGridLine></LayoutGridLine>
         </div>
     </a-popover>

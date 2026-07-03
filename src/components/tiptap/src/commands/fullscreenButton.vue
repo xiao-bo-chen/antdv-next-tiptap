@@ -5,8 +5,11 @@ import { onMounted, onUnmounted, ref } from 'vue'
 
 import FullscreenExitLineIcon from '@/assets/icons/ri--fullscreen-exit-line.svg'
 import FullscreenLineIcon from '@/assets/icons/ri--fullscreen-line.svg'
+import { useLocale } from '@/composables/useLocale'
 
 const props = defineProps<{ editor: Editor }>()
+
+const { t } = useLocale()
 
 const isFullscreen = ref(false)
 
@@ -29,7 +32,7 @@ onUnmounted(() => document.removeEventListener('fullscreenchange', onFullscreenC
 </script>
 
 <template>
-    <a-tooltip :title="isFullscreen ? '退出全屏' : '全屏'" placement="bottom">
+    <a-tooltip :title="isFullscreen ? t('exitFullscreen') : t('fullscreen')" placement="bottom">
         <div class="toolbar-btn" @click="toggle">
             <FullscreenExitLineIcon v-if="isFullscreen"></FullscreenExitLineIcon>
             <FullscreenLineIcon v-else></FullscreenLineIcon>

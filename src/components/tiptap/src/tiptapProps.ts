@@ -1,3 +1,5 @@
+import type { LocaleMessages } from '@/locales'
+
 export type PluginName =
     | 'undoRedo'
     | 'heading'
@@ -67,4 +69,12 @@ export interface EditorProps {
      * - 'json'：modelValue 为 JSON 字符串（Tiptap doc 格式）
      */
     outputFormat?: OutputFormat
+    /**
+     * 国际化语言包。可传入内置语言标识或完整消息对象。
+     * 内置：'zh-CN'（默认）| 'en-US'
+     * 也可传入自定义 LocaleMessages 对象实现任意语言。
+     * @example 'en-US'
+     * @example { wordCount: 'Characters: ', bold: 'Bold', ... }
+     */
+    locale?: 'zh-CN' | 'en-US' | LocaleMessages
 }

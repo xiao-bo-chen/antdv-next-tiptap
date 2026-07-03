@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import type { Editor } from '@tiptap/vue-3'
 
+import { useLocale } from '@/composables/useLocale'
+
 const props = defineProps<{ editor?: Editor }>()
+
+const { t } = useLocale()
 
 /** 字号选项 - 从12px到48px的常用字号 */
 const SIZE_OPTIONS = ['12', '14', '16', '18', '20', '24', '28', '32', '36', '48'].map((s) => ({
@@ -30,7 +34,7 @@ const applySize = (value: string | undefined) => {
         size="small"
         :value="currentSize"
         :options="SIZE_OPTIONS"
-        placeholder="字号"
+        :placeholder="t('fontSizePlaceholder')"
         style="width: 72px"
         allow-clear
         @change="applySize"

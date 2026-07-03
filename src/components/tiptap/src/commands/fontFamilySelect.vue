@@ -1,18 +1,22 @@
 <script lang="ts" setup>
 import type { Editor } from '@tiptap/vue-3'
 
+import { useLocale } from '@/composables/useLocale'
+
 const props = defineProps<{ editor?: Editor }>()
 
+const { t } = useLocale()
+
 /** 可用字体选项 - 包含中英文常见字体 */
-const FONT_OPTIONS = [
-    { label: '微软雅黑', value: 'Microsoft YaHei' },
-    { label: '宋体', value: 'SimSun' },
-    { label: '黑体', value: 'SimHei' },
+const FONT_OPTIONS = computed(() => [
+    { label: t('fontMicrosoftYaHei'), value: 'Microsoft YaHei' },
+    { label: t('fontSimSun'), value: 'SimSun' },
+    { label: t('fontSimHei'), value: 'SimHei' },
     { label: 'Arial', value: 'Arial' },
     { label: 'Georgia', value: 'Georgia' },
     { label: 'Courier New', value: 'Courier New' },
     { label: 'Verdana', value: 'Verdana' }
-]
+])
 
 const currentFont = computed(() =>
     props.editor
@@ -35,7 +39,7 @@ const applyFont = (value: string | undefined) => {
         size="small"
         :value="currentFont"
         :options="FONT_OPTIONS"
-        placeholder="字体"
+        :placeholder="t('fontFamilyPlaceholder')"
         style="width: 104px"
         allow-clear
         @change="applyFont"

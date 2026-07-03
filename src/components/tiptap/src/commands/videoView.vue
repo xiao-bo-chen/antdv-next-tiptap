@@ -4,6 +4,7 @@ import { computed, inject, ref } from 'vue'
 
 import DeleteBinLine from '@/assets/icons/ri--delete-bin-line.svg'
 import PencilLineIcon from '@/assets/icons/ri--pencil-line.svg'
+import { useLocale } from '@/composables/useLocale'
 
 import type { VideoFormData } from './videoModal.vue'
 
@@ -12,6 +13,7 @@ import VideoModal from './videoModal.vue'
 
 const props = defineProps(nodeViewProps)
 
+const { t } = useLocale()
 const editable = inject(editableKey)
 const modalOpen = ref(false)
 
@@ -61,13 +63,13 @@ const handleConfirm = (data: VideoFormData) => {
         <a-popover trigger="hover" :arrow="false" placement="top">
             <template v-if="editable" #content>
                 <div class="video-toolbar">
-                    <a-tooltip title="编辑" placement="top">
+                    <a-tooltip :title="t('edit')" placement="top">
                         <div class="video-toolbar__btn" @click.stop="modalOpen = true">
                             <PencilLineIcon></PencilLineIcon>
                         </div>
                     </a-tooltip>
                     <div class="video-toolbar__divider" />
-                    <a-tooltip title="删除" placement="top">
+                    <a-tooltip :title="t('delete')" placement="top">
                         <div
                             class="video-toolbar__btn video-toolbar__btn--danger"
                             @click.stop="deleteNode()"
@@ -92,7 +94,7 @@ const handleConfirm = (data: VideoFormData) => {
 
         <VideoModal
             v-model:open="modalOpen"
-            title="编辑视频"
+            :title="t('editVideo')"
             :initial-values="initialValues"
             @confirm="handleConfirm"
         />

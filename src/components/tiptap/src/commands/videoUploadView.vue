@@ -10,10 +10,13 @@ import { inject, ref } from 'vue'
 
 import DeleteBinLine from '@/assets/icons/ri--delete-bin-line.svg'
 import VideoLineIcon from '@/assets/icons/ri--video-line.svg'
+import { useLocale } from '@/composables/useLocale'
 
 import { uploadVideoKey } from '../injectionKeys'
 
 const props = defineProps(nodeViewProps)
+
+const { t } = useLocale()
 
 // 注入上传函数，如果没有配置则使用 FileReader 转 Base64
 const uploadVideo = inject(uploadVideoKey, undefined)
@@ -115,11 +118,11 @@ const handleCustomUpload = ({ file, onProgress, onSuccess, onError }: any) => {
                     <div class="upload-icon-wrap">
                         <VideoLineIcon class="file-icon" />
                     </div>
-                    <p class="upload-title">点击或拖动文件到此区域上传</p>
+                    <p class="upload-title">{{ t('videoUploadTitle') }}</p>
                     <p v-if="uploading" class="upload-hint">
                         <a-progress :percent="progress" size="small" />
                     </p>
-                    <p v-else class="upload-hint">支持 MP4, WEBM, MOV, AVI, MKV</p>
+                    <p v-else class="upload-hint">{{ t('videoUploadHint') }}</p>
                 </div>
             </a-upload-dragger>
             <!-- 删除按钮 -->

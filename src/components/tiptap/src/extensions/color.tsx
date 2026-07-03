@@ -22,7 +22,7 @@ export const colorPlugin: EditorPlugin = {
                 <ColorButton
                     editor={editor}
                     icon={FontColorIcon}
-                    title="文字颜色"
+                    title="fontColor"
                     getColor={() =>
                         (editor.getAttributes('textStyle').color as string | undefined) ?? '#000000'
                     }

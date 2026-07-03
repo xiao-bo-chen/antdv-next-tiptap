@@ -18,25 +18,25 @@ export const textAlignPlugin: EditorPlugin = {
         { divider: true },
         {
             icon: AlignLeftIcon,
-            title: '左对齐',
+            title: 'alignLeft',
             action: (editor) => editor.chain().focus().setTextAlign('left').run(),
             isActive: (editor) => editor.isActive({ textAlign: 'left' })
         },
         {
             icon: AlignCenterIcon,
-            title: '居中对齐',
+            title: 'alignCenter',
             action: (editor) => editor.chain().focus().setTextAlign('center').run(),
             isActive: (editor) => editor.isActive({ textAlign: 'center' })
         },
         {
             icon: AlignRightIcon,
-            title: '右对齐',
+            title: 'alignRight',
             action: (editor) => editor.chain().focus().setTextAlign('right').run(),
             isActive: (editor) => editor.isActive({ textAlign: 'right' })
         },
         {
             icon: AlignJustifyIcon,
-            title: '两端对齐',
+            title: 'alignJustify',
             action: (editor) => editor.chain().focus().setTextAlign('justify').run(),
             isActive: (editor) => editor.isActive({ textAlign: 'justify' })
         }

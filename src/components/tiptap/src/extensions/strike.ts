@@ -14,7 +14,7 @@ export const strikePlugin: EditorPlugin = {
     toolbar: [
         {
             icon: StrikethroughIcon,
-            title: '删除线',
+            title: 'strike',
             action: (editor) => editor.chain().focus().toggleStrike().run(),
             isActive: (editor) => editor.isActive('strike')
         }

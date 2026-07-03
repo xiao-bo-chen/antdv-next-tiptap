@@ -4,12 +4,14 @@ import type { Color, ColorValueType } from 'antdv-next'
 
 import { computed, ref, shallowRef, watch } from 'vue'
 
+import { useLocale } from '@/composables/useLocale'
+
 type PickerColor = Extract<ColorValueType, string | { cleared: any }>
 
 const props = defineProps<{
     editor?: Editor
     /** 图标 */
-    icon: string
+    icon: any
     /** 标题 */
     title: string
     /** 应用颜色的回调 */
@@ -18,9 +20,14 @@ const props = defineProps<{
     getColor?: () => string
 }>()
 
-const PRESET_COLORS = [
+const { t, has } = useLocale()
+
+/** title 支持 locale key 或直接文字 */
+const resolvedTitle = computed(() => (has(props.title) ? t(props.title as any) : props.title))
+
+const PRESET_COLORS = computed(() => [
     {
-        label: '内置颜色',
+        label: t('presetColors'),
         colors: [
             '#91caff',
             '#69b1ff',
@@ -36,7 +43,7 @@ const PRESET_COLORS = [
             '#5cdbd3'
         ]
     }
-]
+])
 
 const open = ref(false)
 const color = shallowRef<PickerColor>(props.getColor?.() ?? '#000000')
@@ -83,11 +90,13 @@ const handleConfirm = () => {
         <template #panelRender="{ panel }">
             <component :is="panel" />
             <div class="color-footer">
-                <a-button size="small" @click="handleClear">清除</a-button>
-                <a-button size="small" type="primary" @click="handleConfirm">确定</a-button>
+                <a-button size="small" @click="handleClear">{{ t('colorClear') }}</a-button>
+                <a-button size="small" type="primary" @click="handleConfirm">{{
+                    t('confirm')
+                }}</a-button>
             </div>
         </template>
-        <a-tooltip :title="title">
+        <a-tooltip :title="resolvedTitle">
             <div class="toolbar-btn">
                 <div class="flex flex-col items-center gap-1px">
                     <component :is="icon"></component>

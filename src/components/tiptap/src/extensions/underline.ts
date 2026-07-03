@@ -14,7 +14,7 @@ export const underlinePlugin: EditorPlugin = {
     toolbar: [
         {
             icon: UnderlineIcon,
-            title: '下划线',
+            title: 'underline',
             action: (editor) => editor.chain().focus().toggleUnderline().run(),
             isActive: (editor) => editor.isActive('underline')
         }

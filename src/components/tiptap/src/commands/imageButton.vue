@@ -4,10 +4,13 @@ import type { Editor } from '@tiptap/vue-3'
 import { ref } from 'vue'
 
 import ImageLineIcon from '@/assets/icons/ri--image-line.svg'
+import { useLocale } from '@/composables/useLocale'
 
 import ImageModal, { type ImageFormData } from './imageModal.vue'
 
 const props = defineProps<{ editor?: Editor }>()
+
+const { t } = useLocale()
 
 const modalOpen = ref(false)
 
@@ -32,13 +35,17 @@ const handleConfirm = (data: ImageFormData) => {
         </div>
         <template #popupRender>
             <a-menu>
-                <a-menu-item key="url" @click="modalOpen = true">插入图片地址</a-menu-item>
-                <a-menu-item key="local" @click="insertUploadArea">本地上传</a-menu-item>
+                <a-menu-item key="url" @click="modalOpen = true">{{
+                    t('insertImageUrl')
+                }}</a-menu-item>
+                <a-menu-item key="local" @click="insertUploadArea">{{
+                    t('localUpload')
+                }}</a-menu-item>
             </a-menu>
         </template>
     </a-dropdown>
 
-    <ImageModal v-model:open="modalOpen" title="插入图片" @confirm="handleConfirm" />
+    <ImageModal v-model:open="modalOpen" :title="t('insertImage')" @confirm="handleConfirm" />
 </template>
 
 <style lang="scss" scoped>

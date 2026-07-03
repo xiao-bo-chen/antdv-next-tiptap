@@ -14,7 +14,7 @@ export const italicPlugin: EditorPlugin = {
     toolbar: [
         {
             icon: ItalicIcon,
-            title: '斜体',
+            title: 'italic',
             action: (editor) => editor.chain().focus().toggleItalic().run(),
             isActive: (editor) => editor.isActive('italic')
         }

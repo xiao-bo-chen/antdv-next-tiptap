@@ -10,10 +10,13 @@ import { inject, ref } from 'vue'
 
 import DeleteBinLine from '@/assets/icons/ri--delete-bin-line.svg'
 import ImageLineIcon from '@/assets/icons/ri--image-line.svg'
+import { useLocale } from '@/composables/useLocale'
 
 import { uploadImageKey } from '../injectionKeys'
 
 const props = defineProps(nodeViewProps)
+
+const { t } = useLocale()
 
 // 支持的图片格式
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
@@ -115,11 +118,11 @@ const handleCustomUpload = ({ file, onProgress, onSuccess, onError }: any) => {
                     <div class="upload-icon-wrap">
                         <ImageLineIcon class="file-icon" />
                     </div>
-                    <p class="upload-title">点击或拖动文件到此区域上传</p>
+                    <p class="upload-title">{{ t('imageUploadTitle') }}</p>
                     <p v-if="uploading" class="upload-hint">
                         <a-progress :percent="progress" size="small" />
                     </p>
-                    <p v-else class="upload-hint">支持 PNG, JPG, GIF, WEBP</p>
+                    <p v-else class="upload-hint">{{ t('imageUploadHint') }}</p>
                 </div>
             </a-upload-dragger>
             <!-- 删除按钮 -->

@@ -14,7 +14,7 @@ export const blockquotePlugin: EditorPlugin = {
         { divider: true },
         {
             icon: DoubleQuotesIcon,
-            title: '引用',
+            title: 'blockquote',
             action: (editor) => editor.chain().focus().toggleBlockquote().run(),
             isActive: (editor) => editor.isActive('blockquote')
         }

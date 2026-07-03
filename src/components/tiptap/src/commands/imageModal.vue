@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { reactive, watch } from 'vue'
 
+import { useLocale } from '@/composables/useLocale'
+
 export interface ImageFormData {
     src: string
     alt: string
@@ -15,6 +17,8 @@ const props = defineProps<{
 
 const open = defineModel<boolean>('open', { required: true })
 const emit = defineEmits<{ confirm: [data: ImageFormData] }>()
+
+const { t } = useLocale()
 
 const form = reactive<ImageFormData>({ src: '', alt: '', width: null, height: null })
 
@@ -39,9 +43,15 @@ const handleConfirm = () => {
 </script>
 
 <template>
-    <a-modal v-model:open="open" :title="title" width="480px" :z-index="9999" :focus-after-show="false">
+    <a-modal
+        v-model:open="open"
+        :title="title"
+        width="480px"
+        :z-index="9999"
+        :focus-after-show="false"
+    >
         <a-form layout="vertical" class="form">
-            <a-form-item label="图片地址">
+            <a-form-item :label="t('imageUrl')">
                 <a-input
                     v-model:value="form.src"
                     placeholder="https://..."
@@ -49,22 +59,26 @@ const handleConfirm = () => {
                     @press-enter="handleConfirm"
                 />
             </a-form-item>
-            <a-form-item label="图片描述">
-                <a-input v-model:value="form.alt" placeholder="请输入图片描述" allow-clear />
+            <a-form-item :label="t('imageAlt')">
+                <a-input
+                    v-model:value="form.alt"
+                    :placeholder="t('imageAltPlaceholder')"
+                    allow-clear
+                />
             </a-form-item>
             <div class="form__row">
-                <a-form-item label="宽度" class="flex-1">
+                <a-form-item :label="t('width')" class="flex-1">
                     <a-input-number
                         v-model:value="form.width"
-                        placeholder="自动"
+                        :placeholder="t('widthPlaceholder')"
                         :min="20"
                         style="width: 100%"
                     />
                 </a-form-item>
-                <a-form-item label="高度" class="flex-1">
+                <a-form-item :label="t('height')" class="flex-1">
                     <a-input-number
                         v-model:value="form.height"
-                        placeholder="自动"
+                        :placeholder="t('heightPlaceholder')"
                         :min="20"
                         style="width: 100%"
                     />
@@ -72,8 +86,8 @@ const handleConfirm = () => {
             </div>
         </a-form>
         <template #footer>
-            <a-button @click="open = false">取消</a-button>
-            <a-button type="primary" @click="handleConfirm">确定</a-button>
+            <a-button @click="open = false">{{ t('cancel') }}</a-button>
+            <a-button type="primary" @click="handleConfirm">{{ t('confirm') }}</a-button>
         </template>
     </a-modal>
 </template>

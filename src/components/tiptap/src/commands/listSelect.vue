@@ -5,33 +5,36 @@ import ArrowDownSLine from '@/assets/icons/ri--arrow-down-s-line.svg'
 import ListCheck2Icon from '@/assets/icons/ri--list-check-2.svg'
 import ListOrderedIcon from '@/assets/icons/ri--list-ordered.svg'
 import ListUnorderedIcon from '@/assets/icons/ri--list-unordered.svg'
+import { useLocale } from '@/composables/useLocale'
 
 const props = defineProps<{ editor: Editor }>()
 
-const items = [
+const { t } = useLocale()
+
+const items = computed(() => [
     {
         key: 'bulletList',
         icon: ListUnorderedIcon,
-        label: '无序列表',
+        label: t('listBullet'),
         action: (e: Editor) => e.chain().focus().toggleBulletList().run()
     },
     {
         key: 'orderedList',
         icon: ListOrderedIcon,
-        label: '有序列表',
+        label: t('listOrdered'),
         action: (e: Editor) => e.chain().focus().toggleOrderedList().run()
     },
     {
         key: 'taskList',
         icon: ListCheck2Icon,
-        label: '任务列表',
+        label: t('listTask'),
         action: (e: Editor) => e.chain().focus().toggleTaskList().run()
     }
-]
+])
 
-const activeKey = computed(() => items.find((i) => props.editor.isActive(i.key))?.key ?? null)
+const activeKey = computed(() => items.value.find((i) => props.editor.isActive(i.key))?.key ?? null)
 const activeIcon = computed(
-    () => items.find((i) => i.key === activeKey.value)?.icon ?? ListUnorderedIcon
+    () => items.value.find((i) => i.key === activeKey.value)?.icon ?? ListUnorderedIcon
 )
 </script>
 

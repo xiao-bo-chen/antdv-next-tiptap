@@ -7,11 +7,14 @@ import AlignLeftIcon from '@/assets/icons/ri--align-left.svg'
 import AlignRightIcon from '@/assets/icons/ri--align-right.svg'
 import DeleteBinLine from '@/assets/icons/ri--delete-bin-line.svg'
 import PencilLineIcon from '@/assets/icons/ri--pencil-line.svg'
+import { useLocale } from '@/composables/useLocale'
 
 import { editableKey } from '../injectionKeys'
 import ImageModal, { type ImageFormData } from './imageModal.vue'
 
 const props = defineProps(nodeViewProps)
+
+const { t } = useLocale()
 
 const modalOpen = ref(false)
 
@@ -31,12 +34,12 @@ const handleConfirm = (data: ImageFormData) => {
     })
 }
 
-const displayModes = [
-    { key: 'block', icon: AlignJustifyIcon, label: '独行' },
-    { key: 'inline', icon: AlignCenterIcon, label: '行内' },
-    { key: 'left', icon: AlignLeftIcon, label: '左浮动' },
-    { key: 'right', icon: AlignRightIcon, label: '右浮动' }
-]
+const displayModes = computed(() => [
+    { key: 'block', icon: AlignJustifyIcon, label: t('imageDisplayBlock') },
+    { key: 'inline', icon: AlignCenterIcon, label: t('imageDisplayInline') },
+    { key: 'left', icon: AlignLeftIcon, label: t('imageDisplayFloatLeft') },
+    { key: 'right', icon: AlignRightIcon, label: t('imageDisplayFloatRight') }
+])
 
 const viewClass = computed(() => {
     const display = props.node.attrs.display ?? 'inline'
@@ -77,13 +80,13 @@ const editable = inject(editableKey)
                     </a-tooltip>
 
                     <div class="image-toolbar__divider" />
-                    <a-tooltip title="编辑" placement="top">
+                    <a-tooltip :title="t('edit')" placement="top">
                         <div class="image-toolbar__btn" @click.stop="modalOpen = true">
                             <PencilLineIcon></PencilLineIcon>
                         </div>
                     </a-tooltip>
                     <div class="image-toolbar__divider" />
-                    <a-tooltip title="删除" placement="top">
+                    <a-tooltip :title="t('delete')" placement="top">
                         <div
                             class="image-toolbar__btn image-toolbar__btn--danger"
                             @click.stop="deleteNode()"
@@ -106,7 +109,7 @@ const editable = inject(editableKey)
 
     <ImageModal
         v-model:open="modalOpen"
-        title="编辑图片"
+        :title="t('editImage')"
         :initial-values="initialValues"
         @confirm="handleConfirm"
     />

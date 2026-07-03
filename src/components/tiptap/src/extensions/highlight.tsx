@@ -21,7 +21,7 @@ export const highlightPlugin: EditorPlugin = {
                 <ColorButton
                     editor={editor}
                     icon={PaintFillIcon}
-                    title="高亮"
+                    title="bgColor"
                     getColor={() =>
                         (editor.getAttributes('highlight').color as string | undefined) ?? '#fff'
                     }

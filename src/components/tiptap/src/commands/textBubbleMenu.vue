@@ -10,10 +10,13 @@ import ItalicIcon from '@/assets/icons/ri--italic.svg'
 import PaintFillIcon from '@/assets/icons/ri--paint-fill.svg'
 import StrikethroughIcon from '@/assets/icons/ri--strikethrough.svg'
 import UnderlineIcon from '@/assets/icons/ri--underline.svg'
+import { useLocale } from '@/composables/useLocale'
 
 import ColorButton from './colorButton.vue'
 
 const props = defineProps<{ editor: Editor }>()
+
+const { t } = useLocale()
 
 const hasExt = (name: string) =>
     props.editor.extensionManager.extensions.some((e) => e.name === name)
@@ -21,38 +24,38 @@ const hasExt = (name: string) =>
 const showColor = computed(() => hasExt('color'))
 const showHighlight = computed(() => hasExt('highlight'))
 
-const buttons = [
+const buttons = computed(() => [
     {
         icon: BoldIcon,
-        title: '加粗',
+        title: t('bold'),
         action: () => props.editor.chain().focus().toggleBold().run(),
         isActive: () => props.editor.isActive('bold'),
         ext: 'bold'
     },
     {
         icon: ItalicIcon,
-        title: '斜体',
+        title: t('italic'),
         action: () => props.editor.chain().focus().toggleItalic().run(),
         isActive: () => props.editor.isActive('italic'),
         ext: 'italic'
     },
     {
         icon: UnderlineIcon,
-        title: '下划线',
+        title: t('underline'),
         action: () => props.editor.chain().focus().toggleUnderline().run(),
         isActive: () => props.editor.isActive('underline'),
         ext: 'underline'
     },
     {
         icon: StrikethroughIcon,
-        title: '删除线',
+        title: t('strike'),
         action: () => props.editor.chain().focus().toggleStrike().run(),
         isActive: () => props.editor.isActive('strike'),
         ext: 'strike'
     }
-]
+])
 
-const visibleButtons = computed(() => buttons.filter((b) => hasExt(b.ext)))
+const visibleButtons = computed(() => buttons.value.filter((b) => hasExt(b.ext)))
 
 const showDivider = computed(
     () => visibleButtons.value.length > 0 && (showColor.value || showHighlight.value)
@@ -104,7 +107,7 @@ const getColor = (type: 'textStyle' | 'highlight', defaultColor: string = '#000'
                 v-if="showColor"
                 :editor="editor"
                 :icon="FontColorIcon"
-                title="文字颜色"
+                :title="t('fontColor')"
                 :get-color="() => getColor('textStyle')"
                 :apply="applyColor"
             />
@@ -112,7 +115,7 @@ const getColor = (type: 'textStyle' | 'highlight', defaultColor: string = '#000'
                 v-if="showHighlight"
                 :editor="editor"
                 :icon="PaintFillIcon"
-                title="背景颜色"
+                :title="t('bgColor')"
                 :get-color="() => getColor('highlight', '#fff')"
                 :apply="applyHighlight"
             />

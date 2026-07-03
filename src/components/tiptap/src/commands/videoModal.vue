@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { reactive, watch } from 'vue'
 
+import { useLocale } from '@/composables/useLocale'
+
 import type { VideoAttrs } from '../extensions/videoNode'
 
 export type VideoFormData = Omit<VideoAttrs, 'src'> & { src: string }
@@ -12,6 +14,8 @@ const props = defineProps<{
 
 const open = defineModel<boolean>('open', { required: true })
 const emit = defineEmits<{ confirm: [data: VideoFormData] }>()
+
+const { t } = useLocale()
 
 const form = reactive<VideoFormData>({
     src: '',
@@ -56,37 +60,45 @@ const handleAutoPlayChange = (value: boolean) => {
         :focus-after-show="false"
     >
         <a-form :label-col="{ span: 5 }" :wrapper-col="{ span: 19 }" class="form">
-            <a-form-item label="视频地址">
+            <a-form-item :label="t('videoUrl')">
                 <a-input
                     v-model:value="form.src"
-                    placeholder="请输入视频文件直链（MP4、WebM 等）"
+                    :placeholder="t('videoUrlPlaceholder')"
                     allow-clear
                     @press-enter="handleConfirm"
                 />
             </a-form-item>
-            <a-form-item label="宽度">
-                <a-input v-model:value="form.width" placeholder="如 100% 或 640" allow-clear />
+            <a-form-item :label="t('width')">
+                <a-input
+                    v-model:value="form.width"
+                    :placeholder="t('widthPlaceholder')"
+                    allow-clear
+                />
             </a-form-item>
-            <a-form-item label="高度">
-                <a-input v-model:value="form.height" placeholder="如 360" allow-clear />
+            <a-form-item :label="t('height')">
+                <a-input
+                    v-model:value="form.height"
+                    :placeholder="t('heightPlaceholder')"
+                    allow-clear
+                />
             </a-form-item>
-            <a-form-item label="播放控件">
+            <a-form-item :label="t('controls')">
                 <a-switch v-model:checked="form.controls" />
             </a-form-item>
-            <a-form-item label="自动播放">
+            <a-form-item :label="t('autoplay')">
                 <a-switch v-model:checked="form.autoplay" @change="handleAutoPlayChange" />
-                <span v-if="form.autoplay" class="tip">自动播放需同时开启静音</span>
+                <span v-if="form.autoplay" class="tip">{{ t('autoplayTip') }}</span>
             </a-form-item>
-            <a-form-item label="静音播放">
+            <a-form-item :label="t('muted')">
                 <a-switch v-model:checked="form.muted" />
             </a-form-item>
-            <a-form-item label="循环播放">
+            <a-form-item :label="t('loop')">
                 <a-switch v-model:checked="form.loop" />
             </a-form-item>
         </a-form>
         <template #footer>
-            <a-button @click="open = false">取消</a-button>
-            <a-button type="primary" @click="handleConfirm">确定</a-button>
+            <a-button @click="open = false">{{ t('cancel') }}</a-button>
+            <a-button type="primary" @click="handleConfirm">{{ t('confirm') }}</a-button>
         </template>
     </a-modal>
 </template>

@@ -13,25 +13,28 @@ import DragMoveLineIcon from '@/assets/icons/ri--drag-move-line.svg'
 import FullScreenExitLineIcon from '@/assets/icons/ri--fullscreen-exit-line.svg'
 import FullScreenLineIcon from '@/assets/icons/ri--fullscreen-line.svg'
 import SubtractLineIcon from '@/assets/icons/ri--subtract-line.svg'
+import { useLocale } from '@/composables/useLocale'
 
 const props = defineProps<{ editor: Editor }>()
 
-const actions = [
+const { t } = useLocale()
+
+const actions = computed(() => [
     {
         icon: ArrowLeftLineICon,
-        title: '向前插入列',
+        title: t('addColBefore'),
         action: () => props.editor.chain().focus().addColumnBefore().run(),
         isDisabled: () => !props.editor.can().addColumnBefore()
     },
     {
         icon: ArrowRightLineIcon,
-        title: '向后插入列',
+        title: t('addColAfter'),
         action: () => props.editor.chain().focus().addColumnAfter().run(),
         isDisabled: () => !props.editor.can().addColumnAfter()
     },
     {
         icon: SubtractLineIcon,
-        title: '删除列',
+        title: t('deleteCol'),
         action: () => props.editor.chain().focus().deleteColumn().run(),
         isDisabled: () => !props.editor.can().deleteColumn(),
         danger: true
@@ -39,19 +42,19 @@ const actions = [
     { divider: true },
     {
         icon: ArrowUpLineIcon,
-        title: '向前插入行',
+        title: t('addRowBefore'),
         action: () => props.editor.chain().focus().addRowBefore().run(),
         isDisabled: () => !props.editor.can().addRowBefore()
     },
     {
         icon: ArrowDownLineIcon,
-        title: '向后插入行',
+        title: t('addRowAfter'),
         action: () => props.editor.chain().focus().addRowAfter().run(),
         isDisabled: () => !props.editor.can().addRowAfter()
     },
     {
         icon: SubtractLineIcon,
-        title: '删除行',
+        title: t('deleteRow'),
         action: () => props.editor.chain().focus().deleteRow().run(),
         isDisabled: () => !props.editor.can().deleteRow(),
         danger: true,
@@ -60,25 +63,25 @@ const actions = [
     { divider: true },
     {
         icon: FullScreenExitLineIcon,
-        title: '合并单元格',
+        title: t('mergeCells'),
         action: () => props.editor.chain().focus().mergeCells().run(),
         isDisabled: () => !props.editor.can().mergeCells()
     },
     {
         icon: FullScreenLineIcon,
-        title: '拆分单元格',
+        title: t('splitCell'),
         action: () => props.editor.chain().focus().splitCell().run(),
         isDisabled: () => !props.editor.can().splitCell()
     },
     { divider: true },
     {
         icon: DeleteBinLineIcon,
-        title: '删除表格',
+        title: t('deleteTable'),
         action: () => props.editor.chain().focus().deleteTable().run(),
         isDisabled: () => !props.editor.can().deleteTable(),
         danger: true
     }
-]
+])
 
 // mousedown 时提前判断是否点在单元格外，避免 ProseMirror 表格插件
 // 将选区短暂归位到第一单元格导致工具栏闪烁
@@ -168,7 +171,7 @@ const applyRowHeight = (val: number | null) => {
                 </a-tooltip>
             </template>
             <div class="table-toolbar-divider" />
-            <a-tooltip title="设置行高">
+            <a-tooltip :title="t('rowHeight')">
                 <div class="table-toolbar-row-height">
                     <DragMoveLineIcon class="row-height-icon"></DragMoveLineIcon>
                     <a-input-number
@@ -176,7 +179,7 @@ const applyRowHeight = (val: number | null) => {
                         :min="20"
                         :max="600"
                         :controls="false"
-                        placeholder="行高"
+                        :placeholder="t('rowHeightPlaceholder')"
                         size="small"
                         @change="applyRowHeight"
                     />

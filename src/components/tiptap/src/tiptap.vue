@@ -3,9 +3,12 @@ import type { EditorView } from '@tiptap/pm/view'
 
 import { CharacterCount } from '@tiptap/extensions/character-count'
 import { type Editor, EditorContent, useEditor } from '@tiptap/vue-3'
-import { onUnmounted, provide, ref, toRef, watch } from 'vue'
+import { computed, onUnmounted, provide, reactive, ref, toRef, watch } from 'vue'
+
+import type { LocaleMessages } from '@/locales'
 
 import { useHighlighter } from '@/composables/useHighlight'
+import { enUS, localeKey, zhCN } from '@/locales'
 
 import type { EditorProps } from './tiptapProps'
 
@@ -33,6 +36,18 @@ const props = withDefaults(defineProps<EditorProps>(), {
 })
 
 useHighlighter()
+
+// 解析 locale prop → 响应式，locale 切换时子组件自动更新
+const resolvedLocale = computed<LocaleMessages>(() => {
+    if (!props.locale || props.locale === 'zh-CN') return zhCN as LocaleMessages
+    if (props.locale === 'en-US') return enUS as LocaleMessages
+    return props.locale as LocaleMessages
+})
+
+// provide 一个响应式代理，子组件 inject 后可感知变化
+const reactiveLocale = reactive({}) as LocaleMessages
+watch(resolvedLocale, (msgs) => Object.assign(reactiveLocale, msgs), { immediate: true })
+provide(localeKey, reactiveLocale)
 
 // 仅在传入时注入，避免子组件收到 undefined 的 key
 if (props.uploadImage) provide(uploadImageKey, props.uploadImage)
@@ -177,7 +192,8 @@ watch(
             <template v-if="props.wordCount !== undefined">
                 <slot name="word-count" :count="charCount" :limit="props.wordCount">
                     <div class="editor-word-count">
-                        <span>输入字符数：</span>
+                        <span>{{ reactiveLocale.wordCount }}</span>
+
                         {{ charCount }}
                         {{ typeof props.wordCount === 'number' ? ` / ${props.wordCount}` : '' }}
                     </div>

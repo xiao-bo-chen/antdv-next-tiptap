@@ -16,12 +16,12 @@ export const undoRedoPlugin: EditorPlugin = {
         { divider: true },
         {
             icon: ArrowGoBackLineIcon,
-            title: '撤销',
+            title: 'undo',
             action: (editor) => editor.chain().focus().undo().run()
         },
         {
             icon: ArrowGoForwardLineIcon,
-            title: '重做',
+            title: 'redo',
             action: (editor) => editor.chain().focus().redo().run()
         }
     ]

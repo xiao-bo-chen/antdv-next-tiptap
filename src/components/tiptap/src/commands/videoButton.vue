@@ -4,10 +4,13 @@ import type { Editor } from '@tiptap/vue-3'
 import { ref } from 'vue'
 
 import VideoLineIcon from '@/assets/icons/ri--video-line.svg'
+import { useLocale } from '@/composables/useLocale'
 
 import VideoModal, { type VideoFormData } from './videoModal.vue'
 
 const props = defineProps<{ editor?: Editor }>()
+
+const { t } = useLocale()
 
 const modalOpen = ref(false)
 
@@ -32,13 +35,17 @@ const handleConfirm = (data: VideoFormData) => {
         </div>
         <template #popupRender>
             <a-menu>
-                <a-menu-item key="url" @click="modalOpen = true">插入视频地址</a-menu-item>
-                <a-menu-item key="local" @click="insertUploadArea">本地上传</a-menu-item>
+                <a-menu-item key="url" @click="modalOpen = true">{{
+                    t('insertVideoUrl')
+                }}</a-menu-item>
+                <a-menu-item key="local" @click="insertUploadArea">{{
+                    t('localUpload')
+                }}</a-menu-item>
             </a-menu>
         </template>
     </a-dropdown>
 
-    <VideoModal v-model:open="modalOpen" title="插入视频" @confirm="handleConfirm" />
+    <VideoModal v-model:open="modalOpen" :title="t('insertVideo')" @confirm="handleConfirm" />
 </template>
 
 <style lang="scss" scoped>

@@ -14,7 +14,7 @@ export const clearFormatPlugin: EditorPlugin = {
         { divider: true },
         {
             icon: EraserLineIcon,
-            title: '清除格式',
+            title: 'clearFormat',
             action: (editor) => editor.chain().focus().clearNodes().unsetAllMarks().run()
         }
     ]
