@@ -2,6 +2,10 @@
 import { nodeViewProps, NodeViewWrapper } from '@tiptap/vue-3'
 import { computed, inject, ref } from 'vue'
 
+import AlignCenterIcon from '@/assets/icons/ri--align-center.svg'
+import AlignJustifyIcon from '@/assets/icons/ri--align-justify.svg'
+import AlignLeftIcon from '@/assets/icons/ri--align-left.svg'
+import AlignRightIcon from '@/assets/icons/ri--align-right.svg'
 import DeleteBinLine from '@/assets/icons/ri--delete-bin-line.svg'
 import PencilLineIcon from '@/assets/icons/ri--pencil-line.svg'
 import { useLocale } from '@/composables/useLocale'
@@ -26,6 +30,22 @@ const initialValues = computed<Partial<VideoFormData>>(() => ({
     muted: props.node.attrs.muted ?? false,
     loop: props.node.attrs.loop ?? false
 }))
+
+const displayModes = computed(() => [
+    { key: 'block', icon: AlignJustifyIcon, label: t('imageDisplayBlock') },
+    { key: 'inline', icon: AlignCenterIcon, label: t('imageDisplayInline') },
+    { key: 'left', icon: AlignLeftIcon, label: t('imageDisplayFloatLeft') },
+    { key: 'right', icon: AlignRightIcon, label: t('imageDisplayFloatRight') }
+])
+
+const viewClass = computed(() => {
+    const display = props.node.attrs.display ?? 'inline'
+    return ['video-view', `video-view--${display}`]
+})
+
+// 弹层挂到节点容器内：编辑器全屏时挂 body 的弹层会被全屏元素盖住
+const popupContainer = (trigger: HTMLElement) =>
+    (trigger.closest('.video-view') as HTMLElement | null) ?? document.body
 
 // 纯数字补 px，百分比/带单位字符串直接用
 const toSize = (val: string | null) => {
@@ -59,17 +79,49 @@ const handleConfirm = (data: VideoFormData) => {
 </script>
 
 <template>
-    <NodeViewWrapper class="video-view">
-        <a-popover trigger="hover" :arrow="false" placement="top">
+    <NodeViewWrapper :class="viewClass">
+        <a-popover
+            trigger="hover"
+            :arrow="false"
+            placement="top"
+            :get-popup-container="popupContainer"
+        >
             <template v-if="editable" #content>
                 <div class="video-toolbar">
-                    <a-tooltip :title="t('edit')" placement="top">
+                    <template v-for="mode in displayModes" :key="mode.key">
+                        <a-tooltip
+                            :title="mode.label"
+                            placement="top"
+                            :get-popup-container="popupContainer"
+                        >
+                            <div
+                                class="video-toolbar__btn"
+                                :class="{
+                                    'video-toolbar__btn--active':
+                                        (node.attrs.display ?? 'inline') === mode.key
+                                }"
+                                @click.stop="updateAttributes({ display: mode.key })"
+                            >
+                                <component :is="mode.icon" />
+                            </div>
+                        </a-tooltip>
+                    </template>
+                    <div class="video-toolbar__divider" />
+                    <a-tooltip
+                        :title="t('edit')"
+                        placement="top"
+                        :get-popup-container="popupContainer"
+                    >
                         <div class="video-toolbar__btn" @click.stop="modalOpen = true">
                             <PencilLineIcon></PencilLineIcon>
                         </div>
                     </a-tooltip>
                     <div class="video-toolbar__divider" />
-                    <a-tooltip :title="t('delete')" placement="top">
+                    <a-tooltip
+                        :title="t('delete')"
+                        placement="top"
+                        :get-popup-container="popupContainer"
+                    >
                         <div
                             class="video-toolbar__btn video-toolbar__btn--danger"
                             @click.stop="deleteNode()"
@@ -103,7 +155,26 @@ const handleConfirm = (data: VideoFormData) => {
 
 <style lang="scss">
 .video-view {
-    @apply block my-8px;
+    @apply relative block my-8px;
+
+    &--inline {
+        @apply inline-block my-4px;
+    }
+
+    &--block {
+        @apply block my-8px;
+        text-align: center;
+    }
+
+    &--left {
+        float: left;
+        @apply inline-block my-4px mr-8px;
+    }
+
+    &--right {
+        float: right;
+        @apply inline-block my-4px ml-8px;
+    }
 
     &__body {
         @apply inline-block cursor-pointer box-border rounded-4px;
@@ -121,6 +192,10 @@ const handleConfirm = (data: VideoFormData) => {
     &__btn {
         @apply cursor-pointer w-32px h-32px flex-center rounded-6px transition-base flex-shrink-0;
         @apply text-text hover:bg-ant-primary-bg hover:text-primary;
+
+        &--active {
+            @apply bg-ant-primary-bg text-primary;
+        }
 
         &--danger {
             @apply hover:bg-ant-error-bg hover:text-error;

@@ -49,13 +49,45 @@ const progress = ref(0)
  * @param src - 图片地址
  */
 const replaceWithImage = (src: string) => {
-    const pos = props.getPos()
-    if (typeof pos !== 'number' || !props.editor) return
+    if (!props.editor) return
     const imageType = props.editor.state.schema.nodes['image']
     if (!imageType) return
-    props.editor.view.dispatch(
-        props.editor.state.tr.replaceWith(pos, pos + props.node.nodeSize, imageType.create({ src }))
-    )
+    const state = props.editor.state
+    const serialize = (doc: typeof state.doc) => JSON.stringify(doc.toJSON())
+    const before = serialize(state.doc)
+    // 不信任节点视图的 getPos/node：v-model 回灌触发 setContent 重建文档后，
+    // 节点视图可能整体失效（getPos 失效、props.node 被清理，访问即抛错）。
+    // 直接在当前文档里定位上传占位节点，位置与尺寸都从文档拿（多个占位时取第一个）。
+    let found: { pos: number; size: number } | null = null
+    state.doc.descendants((node, nodePos) => {
+        if (found == null && node.type === state.schema.nodes['imageUpload']) {
+            found = { pos: nodePos, size: node.nodeSize }
+            return false
+        }
+        return true
+    })
+    if (found == null) {
+        props.editor.commands.insertContent(imageType.create({ src }))
+        return
+    }
+    const buildTr = (node: ReturnType<typeof imageType.create>) =>
+        state.tr.replaceWith(found!.pos, found!.pos + found!.size, node)
+    const tr = buildTr(imageType.create({ src }))
+    // inline 图片可能放不进 block 占位（如占位是文档唯一内容），prosemirror 会静默放弃；
+    // 对比替换前后的文档，未生效时用段落包裹重试，再不行兜底 insertContent。
+    if (serialize(tr.doc) !== before) {
+        props.editor.view.dispatch(tr)
+        return
+    }
+    const paragraphType = state.schema.nodes['paragraph']
+    if (paragraphType) {
+        const tr2 = buildTr(paragraphType.create(null, imageType.create({ src })))
+        if (serialize(tr2.doc) !== before) {
+            props.editor.view.dispatch(tr2)
+            return
+        }
+    }
+    props.editor.commands.insertContent(imageType.create({ src }))
 }
 
 /**
@@ -153,10 +185,10 @@ const handleCustomUpload = ({ file, onProgress, onSuccess, onError }: any) => {
     transform: translate(30%, -30%);
 
     .toolbar-btn {
-        @apply w-24px h-24px flex-center rounded-full bg-white shadow-md cursor-pointer;
+        @apply w-24px h-24px flex-center rounded-full bg-container shadow-md cursor-pointer;
 
         svg {
-            @apply w-14px h-14px text-gray hover:c-red;
+            @apply w-14px h-14px text-text-secondary hover:c-red;
         }
     }
 }

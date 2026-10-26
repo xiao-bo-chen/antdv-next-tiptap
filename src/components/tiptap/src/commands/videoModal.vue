@@ -82,18 +82,26 @@ const handleAutoPlayChange = (value: boolean) => {
                     allow-clear
                 />
             </a-form-item>
-            <a-form-item :label="t('controls')">
-                <a-switch v-model:checked="form.controls" />
+            <a-form-item :label="t('controls')" class="switch-item">
+                <div class="switch-row">
+                    <a-switch v-model:checked="form.controls" />
+                </div>
             </a-form-item>
-            <a-form-item :label="t('autoplay')">
-                <a-switch v-model:checked="form.autoplay" @change="handleAutoPlayChange" />
-                <span v-if="form.autoplay" class="tip">{{ t('autoplayTip') }}</span>
+            <a-form-item :label="t('autoplay')" class="switch-item">
+                <div class="switch-row">
+                    <a-switch v-model:checked="form.autoplay" @change="handleAutoPlayChange" />
+                    <span v-if="form.autoplay" class="tip">{{ t('autoplayTip') }}</span>
+                </div>
             </a-form-item>
-            <a-form-item :label="t('muted')">
-                <a-switch v-model:checked="form.muted" />
+            <a-form-item :label="t('muted')" class="switch-item">
+                <div class="switch-row">
+                    <a-switch v-model:checked="form.muted" />
+                </div>
             </a-form-item>
-            <a-form-item :label="t('loop')">
-                <a-switch v-model:checked="form.loop" />
+            <a-form-item :label="t('loop')" class="switch-item">
+                <div class="switch-row">
+                    <a-switch v-model:checked="form.loop" />
+                </div>
             </a-form-item>
         </a-form>
         <template #footer>
@@ -106,6 +114,10 @@ const handleAutoPlayChange = (value: boolean) => {
 <style lang="scss" scoped>
 .form {
     @apply pt-16px pb-8px;
+}
+
+.switch-row {
+    @apply flex items-center justify-end;
 }
 
 .tip {

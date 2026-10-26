@@ -54,11 +54,15 @@ const imageStyle = computed(() => {
     }
 })
 const editable = inject(editableKey)
+
+// 弹层挂到节点容器内：编辑器全屏时挂 body 的弹层会被全屏元素盖住
+const popupContainer = (trigger: HTMLElement) =>
+    (trigger.closest('.image-view') as HTMLElement | null) ?? document.body
 </script>
 
 <template>
     <NodeViewWrapper as="span" :class="viewClass">
-        <a-popover trigger="click" :arrow="false">
+        <a-popover trigger="click" :arrow="false" :get-popup-container="popupContainer">
             <template #content v-if="editable">
                 <div class="image-toolbar">
                     <a-tooltip
@@ -66,6 +70,7 @@ const editable = inject(editableKey)
                         :key="mode.key"
                         :title="mode.label"
                         placement="top"
+                        :get-popup-container="popupContainer"
                     >
                         <div
                             class="image-toolbar__btn"
@@ -80,13 +85,13 @@ const editable = inject(editableKey)
                     </a-tooltip>
 
                     <div class="image-toolbar__divider" />
-                    <a-tooltip :title="t('edit')" placement="top">
+                    <a-tooltip :title="t('edit')" placement="top" :get-popup-container="popupContainer">
                         <div class="image-toolbar__btn" @click.stop="modalOpen = true">
                             <PencilLineIcon></PencilLineIcon>
                         </div>
                     </a-tooltip>
                     <div class="image-toolbar__divider" />
-                    <a-tooltip :title="t('delete')" placement="top">
+                    <a-tooltip :title="t('delete')" placement="top" :get-popup-container="popupContainer">
                         <div
                             class="image-toolbar__btn image-toolbar__btn--danger"
                             @click.stop="deleteNode()"
@@ -117,7 +122,7 @@ const editable = inject(editableKey)
 
 <style lang="scss" scoped>
 .image-view {
-    @apply leading-0;
+    @apply leading-0 relative;
 
     &--inline {
         @apply inline-block my-4px;

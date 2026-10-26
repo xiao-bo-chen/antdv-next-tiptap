@@ -49,7 +49,19 @@ export const VideoNode = Node.create({
             controls: { ...boolAttr('controls'), default: true },
             autoplay: boolAttr('autoplay'),
             muted: boolAttr('muted'),
-            loop: boolAttr('loop')
+            loop: boolAttr('loop'),
+            display: {
+                default: 'inline',
+                parseHTML: (el: HTMLElement) => {
+                    const dp = el.getAttribute('data-display')
+                    if (dp && ['inline', 'block', 'left', 'right'].includes(dp)) return dp
+                    const { cssFloat, display } = (el as HTMLElement).style
+                    if (cssFloat === 'left') return 'left'
+                    if (cssFloat === 'right') return 'right'
+                    return dp ?? 'inline'
+                },
+                renderHTML: ({ display }) => (display ? { 'data-display': display } : {})
+            }
         }
     },
 
